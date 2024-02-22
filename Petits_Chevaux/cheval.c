@@ -12,12 +12,17 @@
 #include <liste.h>
 #include <piste.h>
 
+
+
+
 int 
 main( int nb_arg , char * tab_arg[] )
 {     
 
   int cle_piste ;
   piste_t * piste = NULL ;
+
+  liste_t * liste = NULL;
 
   int cle_liste ;
   /* liste_t * liste = NULL ; */
@@ -34,6 +39,8 @@ main( int nb_arg , char * tab_arg[] )
 
 
   elem_t elem_cheval ;
+
+  int shmid_liste;
 
 
 
@@ -83,6 +90,30 @@ main( int nb_arg , char * tab_arg[] )
   /* 
    * Enregistrement du cheval dans la liste
    */
+  int id_piste = atoi(tab_arg[1]);
+  int id_liste = atoi(tab_arg[2]);
+
+  
+
+  
+  printf("arggggss %d \n",id_liste);
+
+
+  if (shmid_liste = shmget(id_liste,sizeof(int),0) == -1)
+  {
+    perror("lecture de l'id de la liste a echoué");
+  }
+  
+  printf("shmid_liste %d",shmid_liste);
+  if (shmat(shmid_liste,liste,0) == -1) 
+  {
+    perror("association adr echoue : ");
+  }
+
+  printf("Liste pointeur : %p",liste);
+
+
+
 
   
 
@@ -90,7 +121,7 @@ main( int nb_arg , char * tab_arg[] )
     {
       /* Attente entre 2 coup de de */
       commun_attendre_tour() ;
-
+   
       /* 
        * Verif si pas decanille 
        */
@@ -151,3 +182,14 @@ main( int nb_arg , char * tab_arg[] )
   
   exit(0);
 }
+
+
+
+
+
+
+
+
+
+
+
