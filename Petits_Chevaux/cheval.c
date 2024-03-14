@@ -93,24 +93,61 @@ main( int nb_arg , char * tab_arg[] )
   int id_piste = atoi(tab_arg[1]);
   int id_liste = atoi(tab_arg[2]);
 
+
+  //liste = malloc(LISTE_MAX * sizeof(int));
+
   
 
   
   printf("arggggss %d \n",id_liste);
 
 
-  if (shmid_liste = shmget(id_liste,sizeof(int),0) == -1)
+  
+
+  shmid_liste = shmget(id_liste,LISTE_MAX * sizeof(int),0666);
+  if (shmid_liste == -1)
   {
-    perror("lecture de l'id de la liste a echoué");
+    perror("Erreur de lecture : ");
   }
   
-  printf("shmid_liste %d",shmid_liste);
-  if (shmat(shmid_liste,liste,0) == -1) 
+  printf("shmid_liste %d \n",shmid_liste);
+
+  
+  liste_t * attach = shmat(shmid_liste,liste,0);
+  if (attach == (int*)-1)
   {
     perror("association adr echoue : ");
   }
 
-  printf("Liste pointeur : %p",liste);
+  
+
+  liste_elem_ajouter(attach,elem_cheval);
+
+  printf("nb de la liste %d \n",attach->nb);
+
+
+  printf("sem de chev : %d",elem_cheval.sem);
+
+  elem_sem_creer(attach->liste);
+
+  int semid = elem_sem_lire(*attach->liste);
+
+  printf("sem id equals %d \n",semid);
+
+  elem_sem_detruire(attach->liste);
+  
+
+  liste_elem_supprimer(attach,1);
+
+
+
+
+  //elem_sem_creer(liste->liste);
+  //elem_sem_verrouiller(liste);
+  //liste_elem_affecter(liste->liste, liste_nb_lire,elem_cheval);
+  //elem_sem_deverrouiller(liste);
+
+  //printf("Liste pointeur : %p",liste);
 
 
 
@@ -125,6 +162,11 @@ main( int nb_arg , char * tab_arg[] )
       /* 
        * Verif si pas decanille 
        */
+
+      if (!elem_decanille(elem_cheval))
+      {
+
+      }
 
 
 
